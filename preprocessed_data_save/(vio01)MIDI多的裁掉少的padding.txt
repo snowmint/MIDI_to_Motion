@@ -1,0 +1,24 @@
+|                     |   midi |   motion |
+|:--------------------|-------:|---------:|
+| vio01_Bach1_S1_T1   |   6599 |     6599 |
+| vio01_Bach1_S1_T2   |   7428 |     7428 |
+| vio01_Bach2_S1_T1   |   7380 |     7380 |
+| vio01_Bach2_S1_T2   |   7145 |     7145 |
+| vio01_Bach2_S2_T1   |   6255 |     6255 |
+| vio01_Bach2_S2_T2   |   6153 |     6153 |
+| vio01_Beeth1_S1_T1  |   8276 |     8276 |
+| vio01_Beeth1_S1_T2  |   8925 |     8925 |
+| vio01_Beeth2_S1_T1  |   3548 |     3548 |
+| vio01_Beeth2_S1_T2  |   3850 |     3850 |
+| vio01_Elgar_S1_T1   |   7524 |     7524 |
+| vio01_Elgar_S1_T2   |   7955 |     7955 |
+| vio01_Flower_S1_T1  |   4695 |     4695 |
+| vio01_Flower_S1_T2  |   4804 |     4804 |
+| vio01_Mend_S1_T1    |   7581 |     7581 |
+| vio01_Mend_S1_T2    |   7092 |     7092 |
+| vio01_Mozart1_S1_T1 |   4862 |     4862 |
+| vio01_Mozart1_S1_T2 |   4897 |     4897 |
+| vio01_Mozart2_S1_T1 |   6467 |     6467 |
+| vio01_Mozart2_S1_T2 |   6498 |     6498 |
+| vio01_Wind_S1_T1    |   5815 |     5815 |
+| vio01_Wind_S1_T2    |   5281 |     5281 |
