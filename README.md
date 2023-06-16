@@ -2,6 +2,7 @@
 
 ## 1. data_preprocess.py
 (原則上不用執行。除非有修改 code ，否則我已經運行過，並儲存 pickle file 在指定目錄下了。)
+
 python data_preprocess.py 
 
 ## 2. train.ipynb
