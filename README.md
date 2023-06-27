@@ -33,7 +33,8 @@ Dataset:
 https://drive.google.com/drive/folders/1SobWLwwDAmP6CrF-iHaoQJWU0ozB4pq6?usp=drive_link
 
 100 epoch 訓練後的測試結果：（66首對齊資料）
-<待補上>
+[39min]100epoch_66align_data_custom_loss
+https://drive.google.com/drive/folders/1x2qSkkf6GJuF_zAtrE4dYrkBRmIAH58w?usp=drive_link
 
 100 epoch 訓練後的測試結果：（110首對齊資料）
 <待補上>
