@@ -55,8 +55,8 @@ class Seq2Seq(nn.Module):
         self.decoder = decoder
 
     def forward(self, source, target, teacher_force_ratio):
-        if teacher_force_ratio > 0:
-            target = F.pad(target, (0,0,1,0), value = 0) #<sos>
+        # if teacher_force_ratio > 0:
+        #     target = F.pad(target, (0,0,1,0), value = 0) #<sos>
         
         source = source.permute(1, 0, 2)
         target = target.permute(1, 0, 2)

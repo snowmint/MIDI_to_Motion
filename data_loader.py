@@ -24,9 +24,9 @@ class MidiMotionDataSet(Dataset):
         # already done for preprocess
         for line in lines:  # midi_list replace 'midi' with 'motion' then get motion data.
 
-            midi_file_path = "./" + line.rstrip() + ".pkl"
+            midi_file_path = "./" + line.rstrip()
             # replace all "midi" with "motion"
-            motion_file_path = "./" + line.rstrip().replace("midi", "motion") + ".pkl"
+            motion_file_path = "./" + line.rstrip().replace("midi", "motion")
 
             self.read_data["midi"].append(midi_file_path)
             self.read_data["motion"].append(motion_file_path)

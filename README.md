@@ -3,7 +3,12 @@
 ## 1. data_preprocess.py
 (原則上不用執行。除非有修改 code ，否則我已經運行過，並儲存 pickle file 在指定目錄下了。)
 
-python data_preprocess.py 
+`python data_preprocess.py `
+
+接著更新前處理後檔案目錄至 midi_list.txt 中：
+
+`ls ./preprocessed_data_save/midi/ | awk '{print "preprocessed_data_save/midi/" $0 }' >> midi_list.txt`
+
 
 ## 2. train.ipynb
 包含訓練和測試的程式，超參數也定義於此。
@@ -23,6 +28,12 @@ Dataset:
 `len function`: 由於目前一首歌曲算一筆資料，透過設定 dataset 需要 100 倍的資料量，便可以使每一首歌都會隨機取用 100 個隨機片段。
 
 ## 5. test result
-100 epoch 訓練後的測試結果：
+100 epoch 訓練後的測試結果：（22首對齊資料）
 [100epoch]22min_(custom_loss)random_pick_2200_datasample_per_epoch
 https://drive.google.com/drive/folders/1SobWLwwDAmP6CrF-iHaoQJWU0ozB4pq6?usp=drive_link
+
+100 epoch 訓練後的測試結果：（66首對齊資料）
+<待補上>
+
+100 epoch 訓練後的測試結果：（110首對齊資料）
+<待補上>
