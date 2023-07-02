@@ -57,8 +57,8 @@ def read_csv(f_path, resample_fs):
 
 if __name__ == "__main__":
     import torch
-    midi_FS = 20
-    motion_FS = 20
+    midi_FS = 40
+    motion_FS = 40
     
     performer = "vio01"
     piece = "Bach1_S1_T1"

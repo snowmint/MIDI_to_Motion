@@ -26,7 +26,7 @@ def read_midi(filename, specific_fps):
 
 
 # this_performer = "vio01"
-performaer_list = ["vio01", "vio02", "vio03"]
+performaer_list = ["vio01", "vio02", "vio03", "vio04", "vio05"]
 # performaer_list = ["vio01", "vio02", "vio03", "vio04", "vio05"]
 piece_list = ["Bach1_S1_T1", "Bach1_S1_T2", "Bach2_S1_T1", "Bach2_S1_T2", "Bach2_S2_T1", "Bach2_S2_T2", "Beeth1_S1_T1", "Beeth1_S1_T2", "Beeth2_S1_T1", "Beeth2_S1_T2", "Elgar_S1_T1",
               "Elgar_S1_T2", "Flower_S1_T1", "Flower_S1_T2", "Mend_S1_T1", "Mend_S1_T2", "Mozart1_S1_T1", "Mozart1_S1_T2", "Mozart2_S1_T1", "Mozart2_S1_T2", "Wind_S1_T1", "Wind_S1_T2"]
