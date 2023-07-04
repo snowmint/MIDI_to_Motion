@@ -19,7 +19,6 @@ preprocessed_data_save/midi/vio01_Mozart1_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio01_Mozart2_S1_T1_midi_data.pkl
 preprocessed_data_save/midi/vio01_Mozart2_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio01_Wind_S1_T1_midi_data.pkl
-preprocessed_data_save/midi/vio01_Wind_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio02_Bach1_S1_T1_midi_data.pkl
 preprocessed_data_save/midi/vio02_Bach1_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio02_Bach2_S1_T1_midi_data.pkl
@@ -41,7 +40,6 @@ preprocessed_data_save/midi/vio02_Mozart1_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio02_Mozart2_S1_T1_midi_data.pkl
 preprocessed_data_save/midi/vio02_Mozart2_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio02_Wind_S1_T1_midi_data.pkl
-preprocessed_data_save/midi/vio02_Wind_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio03_Bach1_S1_T1_midi_data.pkl
 preprocessed_data_save/midi/vio03_Bach1_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio03_Bach2_S1_T1_midi_data.pkl
@@ -63,7 +61,6 @@ preprocessed_data_save/midi/vio03_Mozart1_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio03_Mozart2_S1_T1_midi_data.pkl
 preprocessed_data_save/midi/vio03_Mozart2_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio03_Wind_S1_T1_midi_data.pkl
-preprocessed_data_save/midi/vio03_Wind_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio04_Bach1_S1_T1_midi_data.pkl
 preprocessed_data_save/midi/vio04_Bach1_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio04_Bach2_S1_T1_midi_data.pkl
@@ -85,7 +82,6 @@ preprocessed_data_save/midi/vio04_Mozart1_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio04_Mozart2_S1_T1_midi_data.pkl
 preprocessed_data_save/midi/vio04_Mozart2_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio04_Wind_S1_T1_midi_data.pkl
-preprocessed_data_save/midi/vio04_Wind_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio05_Bach1_S1_T1_midi_data.pkl
 preprocessed_data_save/midi/vio05_Bach1_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio05_Bach2_S1_T1_midi_data.pkl
@@ -107,4 +103,3 @@ preprocessed_data_save/midi/vio05_Mozart1_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio05_Mozart2_S1_T1_midi_data.pkl
 preprocessed_data_save/midi/vio05_Mozart2_S1_T2_midi_data.pkl
 preprocessed_data_save/midi/vio05_Wind_S1_T1_midi_data.pkl
-preprocessed_data_save/midi/vio05_Wind_S1_T2_midi_data.pkl
