@@ -5,6 +5,7 @@ import pickle
 import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.utils.data import Dataset, DataLoader
 
 # from data_utils import read_midi, read_csv
@@ -16,6 +17,7 @@ class MidiMotionDataSet(Dataset):
         self.read_data["midi"] = []
         self.read_data["motion"] = []
         self.dataset_len = 0
+        self.piece_count = 0
 
         with open(file_list_txt, 'r') as file:
             lines = file.readlines()
@@ -33,12 +35,14 @@ class MidiMotionDataSet(Dataset):
             piece_count += 1
 
         self.dataset_len = piece_count * 100 #2200
+        self.piece_count = piece_count
+        print("self.piece_count: ", self.piece_count)
         self.performer_namecodes = self.read_data['midi']
         # print(self.performer_namecodes)
         for performer_piece in self.performer_namecodes:
             self.music_files_index = {
                 performer_piece: index for index, file_path in enumerate(self.read_data["midi"])}
-        print("dataset_len", self.dataset_len)
+        print("dataset_len: ", self.dataset_len)
 
     def __len__(self): # len / batch_size = 1 epoch have how many batch
         return self.dataset_len #index need to fit length
@@ -46,8 +50,8 @@ class MidiMotionDataSet(Dataset):
     def __getitem__(self, index):  # 這裡才要讀資料
         # load_pickle with index
         # print("index", index)
-        midi_data_input = open(self.read_data["midi"][index%22], 'rb')
-        motion_data_input = open(self.read_data["motion"][index%22], 'rb')
+        midi_data_input = open(self.read_data["midi"][index%self.piece_count], 'rb')
+        motion_data_input = open(self.read_data["motion"][index%self.piece_count], 'rb')
 
         midi_data = pickle.load(midi_data_input)
         motion_data = pickle.load(motion_data_input)
@@ -102,6 +106,65 @@ class MidiMotionDataSet(Dataset):
         # print(motion_data.shape)
         # return midi_data, motion_data  # self.performer_namecodes[index]
 
+class MidiMotionValDataSet(Dataset):
+    def __init__(self, file_list_txt):  # 定義路徑，建立 file list # , midi_sr, motion_sr
+        self.read_data = {}
+        self.read_data["midi"] = []
+        self.read_data["motion"] = []
+        self.dataset_len = 0
+        self.max_len = 6706
+
+        with open(file_list_txt, 'r') as file:
+            lines = file.readlines()
+
+        piece_count = 0
+        # already done for preprocess
+        for line in lines:  # midi_list replace 'midi' with 'motion' then get motion data.
+
+            midi_file_path = "./" + line.rstrip()
+            # replace all "midi" with "motion"
+            motion_file_path = "./" + line.rstrip().replace("midi", "motion")
+
+            self.read_data["midi"].append(midi_file_path)
+            self.read_data["motion"].append(motion_file_path)
+            piece_count += 1
+
+        self.dataset_len = piece_count #5
+        self.performer_namecodes = self.read_data['midi']
+        # print(self.performer_namecodes)
+        for performer_piece in self.performer_namecodes:
+            self.music_files_index = {
+                performer_piece: index for index, file_path in enumerate(self.read_data["midi"])}
+        print("val_dataset_len", self.dataset_len)
+
+    def __len__(self): # len / batch_size = 1 epoch have how many batch
+        return self.dataset_len #index need to fit length
+
+    def __getitem__(self, index):  # 這裡才要讀資料
+        # load_pickle with index
+        # print("index", index)
+        # | vio01_Wind_S1_T2    |   5281 |
+        # | vio02_Wind_S1_T2    |   6061 |
+        # | vio03_Wind_S1_T2    |   6069 |
+        # | vio04_Wind_S1_T2    |   4525 |
+        # | vio05_Wind_S1_T2    |   6706 |
+        midi_data_input = open(self.read_data["midi"][index], 'rb')
+        motion_data_input = open(self.read_data["motion"][index], 'rb')
+
+        midi_data = pickle.load(midi_data_input)
+        motion_data = pickle.load(motion_data_input)
+        print("len(midi_data)", len(midi_data))
+        print("len(motion_data)", len(motion_data))
+
+        midi_data_input.close()
+        motion_data_input.close()
+        
+        pad_len = self.max_len - len(midi_data)
+        
+        midi_data_pad = np.pad(midi_data, pad_width=((0, pad_len), (0, 0)), constant_values=0)#F.pad(midi_data, (0,0,0,pad_len), value = 0)
+        motion_data_pad = np.pad(motion_data, pad_width=((0, pad_len), (0, 0)), constant_values=0)
+        
+        return midi_data_pad, motion_data_pad #Full data for evaluation
 
 # class MidiMotionCollate():
 #     def __init__(self, device):
@@ -160,6 +223,16 @@ def get_dataloader(dataset_path, batch_size=1, device='cuda'):
                              drop_last=False)#collate_fn=collate_feature
     return data_loader  # , music_list
 
+def get_val_dataloader(dataset_path, batch_size=1, device='cuda'):
+    dataset = MidiMotionValDataSet(dataset_path)
+    data_loader = DataLoader(dataset,
+                             num_workers=0,
+                             shuffle=True,
+                             sampler=None,
+                             batch_size=batch_size,
+                             pin_memory=False,
+                             drop_last=False)
+    return data_loader
 
 if __name__ == "__main__":
     dataset_name_path = f"./midi_list.txt"
