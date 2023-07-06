@@ -8,7 +8,7 @@
 接著更新前處理後檔案目錄至 midi_list.txt 中：
 
 `ls ./preprocessed_data_save/midi/ | awk '{print "preprocessed_data_save/midi/" $0 }' >> midi_list.txt`
-
+`ls ./preprocessed_data_save_new/midi/ | awk '{print "preprocessed_data_save/midi/" $0 }' >> midi_list_symbolic.txt`
 ## 2-1. train.ipynb
 包含訓練和測試的程式，超參數也定義於此。
 
