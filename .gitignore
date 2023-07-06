@@ -2,3 +2,6 @@
 /[vio01-03]preprocessed_data_save.zip
 /[vio01-03]midi_list.txt
 *.tar
+*.mp4
+*.wav
+*.jpg
