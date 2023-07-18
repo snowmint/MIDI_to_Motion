@@ -209,6 +209,252 @@ class MidiMotionValDataSet(Dataset):
 #         return pad_midi, pad_motion
         # return pad_midi, pad_motion, stop_token, pad_mask_midi, pad_mask_motion
 
+class AudioMotionDataSet(Dataset):
+    def __init__(self, file_list_txt):  # 定義路徑，建立 file list # , midi_sr, motion_sr
+        self.read_data = {}
+        self.read_data["audio"] = []
+        self.read_data["motion"] = []
+        self.dataset_len = 0
+        self.piece_count = 0
+
+        with open(file_list_txt, 'r') as file:
+            lines = file.readlines()
+
+        piece_count = 0
+        # already done for preprocess
+        for line in lines:  # audio_list replace 'audio' with 'motion' then get motion data.
+
+            audio_file_path = "./" + line.rstrip()
+            # replace all "audio" with "motion"
+            motion_file_path = "./" + line.rstrip().replace("audio", "motion")
+            # print("motion_file_path", motion_file_path)
+            self.read_data["audio"].append(audio_file_path)
+            self.read_data["motion"].append(motion_file_path)
+            piece_count += 1
+
+        self.dataset_len = piece_count * 100 #2200
+        self.piece_count = piece_count
+        print("self.piece_count: ", self.piece_count)
+        self.performer_namecodes = self.read_data['audio']
+        # print(self.performer_namecodes)
+        for performer_piece in self.performer_namecodes:
+            self.music_files_index = {
+                performer_piece: index for index, file_path in enumerate(self.read_data["audio"])}
+        print("dataset_len: ", self.dataset_len)
+
+    def __len__(self): # len / batch_size = 1 epoch have how many batch
+        return self.dataset_len #index need to fit length
+
+    def __getitem__(self, index):  # 這裡才要讀資料
+        # load_pickle with index
+        # print("index", index)
+        audio_data_input = open(self.read_data["audio"][index%self.piece_count], 'rb')
+        motion_data_input = open(self.read_data["motion"][index%self.piece_count], 'rb')
+
+        audio_data = pickle.load(audio_data_input)
+        motion_data = pickle.load(motion_data_input)
+
+        audio_data_input.close()
+        motion_data_input.close()
+        
+        # TODO: 1. Should concat all data to one array, and then split to sequence_len=512 segment.
+        # TODO:     >> If sequence_len cannot divide by 512, then eliminate it.
+        # TODO: 2. May use sliding window to split more segment.
+        window_size = 512
+        
+        left_edge = random.randint(0, len(audio_data) - window_size)
+        # print(left_edge)
+        segment_audio = np.array(audio_data[left_edge:left_edge+window_size])
+        segment_motion =  np.array(motion_data[left_edge:left_edge+window_size])
+        # print("segment_audio", segment_audio.shape)
+        # print("segment_motion", segment_motion.shape)
+
+        return segment_audio, segment_motion
+
+class AudioMotionValDataSet(Dataset):
+    def __init__(self, file_list_txt):  # 定義路徑，建立 file list # , audio_sr, motion_sr
+        self.read_data = {}
+        self.read_data["audio"] = []
+        self.read_data["motion"] = []
+        self.dataset_len = 0
+        self.max_len = 6706
+
+        with open(file_list_txt, 'r') as file:
+            lines = file.readlines()
+
+        piece_count = 0
+        # already done for preprocess
+        for line in lines:  # audio_list replace 'audio' with 'motion' then get motion data.
+
+            audio_file_path = "./" + line.rstrip()
+            # replace all "audio" with "motion"
+            motion_file_path = "./" + line.rstrip().replace("audio", "motion")
+
+            self.read_data["audio"].append(audio_file_path)
+            self.read_data["motion"].append(motion_file_path)
+            piece_count += 1
+
+        self.dataset_len = piece_count #5
+        self.performer_namecodes = self.read_data['audio']
+        # print(self.performer_namecodes)
+        for performer_piece in self.performer_namecodes:
+            self.music_files_index = {
+                performer_piece: index for index, file_path in enumerate(self.read_data["audio"])}
+        print("val_dataset_len", self.dataset_len)
+
+    def __len__(self): # len / batch_size = 1 epoch have how many batch
+        return self.dataset_len #index need to fit length
+
+    def __getitem__(self, index):  # 這裡才要讀資料
+        # load_pickle with index
+        # print("index", index)
+        # | vio01_Wind_S1_T2    |   5281 |
+        # | vio02_Wind_S1_T2    |   6061 |
+        # | vio03_Wind_S1_T2    |   6069 |
+        # | vio04_Wind_S1_T2    |   4525 |
+        # | vio05_Wind_S1_T2    |   6706 |
+        audio_data_input = open(self.read_data["audio"][index], 'rb')
+        motion_data_input = open(self.read_data["motion"][index], 'rb')
+
+        audio_data = pickle.load(audio_data_input)
+        motion_data = pickle.load(motion_data_input)
+        print("len(audio_data)", len(audio_data))
+        print("len(motion_data)", len(motion_data))
+
+        audio_data_input.close()
+        motion_data_input.close()
+        
+        pad_len = self.max_len - len(audio_data)
+        
+        audio_data_pad = np.pad(audio_data, pad_width=((0, pad_len), (0, 0)), constant_values=0)#F.pad(midi_data, (0,0,0,pad_len), value = 0)
+        motion_data_pad = np.pad(motion_data, pad_width=((0, pad_len), (0, 0)), constant_values=0)
+        
+        return audio_data_pad, motion_data_pad #Full data for evaluation
+
+#===
+
+class AllDataSet(Dataset):
+    def __init__(self, file_list_txt):  # 定義路徑，建立 file list # , midi_sr, motion_sr
+        self.read_data = {}
+        self.read_data["all"] = []
+        self.read_data["motion"] = []
+        self.dataset_len = 0
+        self.piece_count = 0
+
+        with open(file_list_txt, 'r') as file:
+            lines = file.readlines()
+
+        piece_count = 0
+        # already done for preprocess
+        for line in lines:  # audio_list replace 'audio' with 'motion' then get motion data.
+
+            all_file_path = "./" + line.rstrip()
+            # replace all "all" with "motion"
+            motion_file_path = "./" + line.rstrip().replace("all", "motion")
+            # print("motion_file_path", motion_file_path)
+            self.read_data["all"].append(all_file_path)
+            self.read_data["motion"].append(motion_file_path)
+            piece_count += 1
+
+        self.dataset_len = piece_count * 100 #2200
+        self.piece_count = piece_count
+        print("self.piece_count: ", self.piece_count)
+        self.performer_namecodes = self.read_data['all']
+        # print(self.performer_namecodes)
+        for performer_piece in self.performer_namecodes:
+            self.music_files_index = {
+                performer_piece: index for index, file_path in enumerate(self.read_data["all"])}
+        print("dataset_len: ", self.dataset_len)
+
+    def __len__(self): # len / batch_size = 1 epoch have how many batch
+        return self.dataset_len #index need to fit length
+
+    def __getitem__(self, index):  # 這裡才要讀資料
+        # load_pickle with index
+        # print("index", index)
+        all_data_input = open(self.read_data["all"][index%self.piece_count], 'rb')
+        motion_data_input = open(self.read_data["motion"][index%self.piece_count], 'rb')
+
+        all_data = pickle.load(all_data_input)
+        motion_data = pickle.load(motion_data_input)
+
+        all_data_input.close()
+        motion_data_input.close()
+        
+        # TODO: 1. Should concat all data to one array, and then split to sequence_len=512 segment.
+        # TODO:     >> If sequence_len cannot divide by 512, then eliminate it.
+        # TODO: 2. May use sliding window to split more segment.
+        window_size = 512
+        
+        left_edge = random.randint(0, len(all_data) - window_size)
+        # print(left_edge)
+        segment_all = np.array(all_data[left_edge:left_edge+window_size])
+        segment_motion =  np.array(motion_data[left_edge:left_edge+window_size])
+        # print("segment_audio", segment_audio.shape)
+        # print("segment_motion", segment_motion.shape)
+
+        return segment_all, segment_motion
+
+class AllValDataSet(Dataset):
+    def __init__(self, file_list_txt):  # 定義路徑，建立 file list # , midi_sr, motion_sr
+        self.read_data = {}
+        self.read_data["all"] = []
+        self.read_data["motion"] = []
+        self.dataset_len = 0
+        self.max_len = 6706
+
+        with open(file_list_txt, 'r') as file:
+            lines = file.readlines()
+
+        piece_count = 0
+        # already done for preprocess
+        for line in lines:  # all_list replace 'all' with 'motion' then get motion data.
+
+            all_file_path = "./" + line.rstrip()
+            # replace all "all" with "motion"
+            motion_file_path = "./" + line.rstrip().replace("all", "motion")
+
+            self.read_data["all"].append(all_file_path)
+            self.read_data["motion"].append(motion_file_path)
+            piece_count += 1
+
+        self.dataset_len = piece_count #5
+        self.performer_namecodes = self.read_data['all']
+        # print(self.performer_namecodes)
+        for performer_piece in self.performer_namecodes:
+            self.music_files_index = {
+                performer_piece: index for index, file_path in enumerate(self.read_data["all"])}
+        print("val_dataset_len", self.dataset_len)
+
+    def __len__(self): # len / batch_size = 1 epoch have how many batch
+        return self.dataset_len #index need to fit length
+
+    def __getitem__(self, index):  # 這裡才要讀資料
+        # load_pickle with index
+        # print("index", index)
+        # | vio01_Wind_S1_T2    |   5281 |
+        # | vio02_Wind_S1_T2    |   6061 |
+        # | vio03_Wind_S1_T2    |   6069 |
+        # | vio04_Wind_S1_T2    |   4525 |
+        # | vio05_Wind_S1_T2    |   6706 |
+        all_data_input = open(self.read_data["all"][index], 'rb')
+        motion_data_input = open(self.read_data["motion"][index], 'rb')
+
+        all_data = pickle.load(all_data_input)
+        motion_data = pickle.load(motion_data_input)
+        print("len(all_data)", len(all_data))
+        print("len(motion_data)", len(motion_data))
+
+        all_data_input.close()
+        motion_data_input.close()
+        
+        pad_len = self.max_len - len(all_data)
+        
+        all_data_pad = np.pad(all_data, pad_width=((0, pad_len), (0, 0)), constant_values=0)#F.pad(midi_data, (0,0,0,pad_len), value = 0)
+        motion_data_pad = np.pad(motion_data, pad_width=((0, pad_len), (0, 0)), constant_values=0)
+        
+        return all_data_pad, motion_data_pad #Full data for evaluation
+
 
 def get_dataloader(dataset_path, batch_size=1, device='cuda'):
     dataset = MidiMotionDataSet(dataset_path)
@@ -223,8 +469,57 @@ def get_dataloader(dataset_path, batch_size=1, device='cuda'):
                              drop_last=False)#collate_fn=collate_feature
     return data_loader  # , music_list
 
+def get_audio_dataloader(dataset_path, batch_size=1, device='cuda'):
+    dataset = AudioMotionDataSet(dataset_path)
+    # music_list = dataset.get_music_list()
+    # collate_feature = MidiMotionCollate(device)
+    data_loader = DataLoader(dataset,
+                             num_workers=0,
+                             shuffle=True,
+                             sampler=None,
+                             batch_size=batch_size,
+                             pin_memory=False,
+                             drop_last=False)#collate_fn=collate_feature
+    return data_loader  # , music_list
+
+def get_all_dataloader(dataset_path, batch_size=1, device='cuda'):
+    dataset = AllDataSet(dataset_path)
+    # music_list = dataset.get_music_list()
+    # collate_feature = MidiMotionCollate(device)
+    data_loader = DataLoader(dataset,
+                             num_workers=0,
+                             shuffle=True,
+                             sampler=None,
+                             batch_size=batch_size,
+                             pin_memory=False,
+                             drop_last=False)#collate_fn=collate_feature
+    return data_loader  # , music_list
+
+
 def get_val_dataloader(dataset_path, batch_size=1, device='cuda'):
     dataset = MidiMotionValDataSet(dataset_path)
+    data_loader = DataLoader(dataset,
+                             num_workers=0,
+                             shuffle=True,
+                             sampler=None,
+                             batch_size=batch_size,
+                             pin_memory=False,
+                             drop_last=False)
+    return data_loader
+
+def get_audio_val_dataloader(dataset_path, batch_size=1, device='cuda'):
+    dataset = AudioMotionValDataSet(dataset_path)
+    data_loader = DataLoader(dataset,
+                             num_workers=0,
+                             shuffle=True,
+                             sampler=None,
+                             batch_size=batch_size,
+                             pin_memory=False,
+                             drop_last=False)
+    return data_loader
+
+def get_all_val_dataloader(dataset_path, batch_size=1, device='cuda'):
+    dataset = AllValDataSet(dataset_path)
     data_loader = DataLoader(dataset,
                              num_workers=0,
                              shuffle=True,
